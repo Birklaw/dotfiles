@@ -115,7 +115,6 @@ unlink_file() {
 # Use $HOME for target to make it portable across VM and container.
 
 HOME_DOTFILES=(
-  ".bunfig.toml:$HOME/.bunfig.toml"
   ".npmrc:$HOME/.npmrc"
   ".tmux.conf:$HOME/.tmux.conf"
   ".vimrc:$HOME/.vimrc"
