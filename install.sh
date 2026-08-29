@@ -122,6 +122,7 @@ HOME_DOTFILES=(
 )
 
 CONFIG_DOTFILES=(
+  "pnpm.config.yaml:$HOME/.config/pnpm/config.yaml"
   "uv.toml:$HOME/.config/uv/uv.toml"
 )
 
