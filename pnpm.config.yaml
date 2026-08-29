@@ -1,0 +1,5 @@
+# Minimum release age of 14 days (in minutes)
+minimumReleaseAge: 20160
+
+# Prevent automatic script execution
+ignoreScripts: true
