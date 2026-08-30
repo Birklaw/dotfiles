@@ -123,6 +123,7 @@ HOME_DOTFILES=(
 CONFIG_DOTFILES=(
   "pnpm.config.yaml:$HOME/.config/pnpm/config.yaml"
   "uv.toml:$HOME/.config/uv/uv.toml"
+  "nvim:$HOME/.config/nvim"
 )
 
 # ---------- apply ----------
@@ -157,4 +158,17 @@ if [[ "$MODE" == "dry-run" ]]; then
   echo "==> Dry run complete. No changes made. Re-run without --dry-run to apply."
 else
   echo "==> Done. Backups (if any) are in: $BACKUP_DIR"
+fi
+
+# ---------- Neovim (LazyVim) headless bootstrap ----------
+# Installs lazy.nvim plugins and Mason LSP servers/formatters (headless).
+# Skip with SKIP_NVIM_BOOTSTRAP=1.
+if [[ "$MODE" == "apply" && "${SKIP_NVIM_BOOTSTRAP:-0}" != "1" ]] && command -v nvim &>/dev/null; then
+  echo
+  echo "==> Bootstrapping Neovim plugins (headless)..."
+  nvim --headless "+Lazy! sync" +qa \
+    || echo "    [warn] Lazy sync failed; first nvim launch will retry"
+  nvim --headless "+MasonToolsInstallSync" +qa 2>/dev/null \
+    || nvim --headless "+MasonUpdate" +qa \
+    || echo "    [warn] Mason tool install skipped; first nvim launch will auto-install"
 fi
