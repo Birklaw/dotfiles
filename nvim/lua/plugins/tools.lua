@@ -12,12 +12,45 @@ return {
     cmd = { "MasonToolsInstall", "MasonToolsInstallSync", "MasonToolsUpdate" },
     opts = {
       -- Servers/formatters the extras don't already declare via mason.
-      -- LazyVim extras auto-register their own tools; keep this list for
-      -- anything extra (e.g. bash tools have no dedicated lang extra).
+      -- LazyVim extras auto-register their own tools on LSP attach, but for
+      -- deterministic headless bootstrap (post-create.sh / install.sh) we
+      -- list every server explicitly so first `nvim` open is fully warm.
       ensure_installed = {
+        -- bash (no dedicated LazyVim lang extra)
         "bash-language-server",
         "shfmt",
         "shellcheck",
+        -- python (lang.python)
+        "basedpyright",
+        "ruff",
+        "debugpy",
+        -- go (lang.go)
+        "gopls",
+        "gofumpt",
+        "goimports",
+        "golangci-lint",
+        "delve",
+        -- typescript (lang.typescript)
+        "vtsls",
+        "js-debug-adapter",
+        -- yaml / k8s (lang.yaml, lang.helm)
+        "yaml-language-server",
+        "helm-ls",
+        -- docker (lang.docker)
+        "dockerfile-language-server",
+        "docker-compose-language-service",
+        "hadolint",
+        -- terraform (lang.terraform)
+        "terraform-ls",
+        "tflint",
+        -- json/markdown (lang.json, lang.markdown)
+        "json-lsp",
+        "marksman",
+        "markdownlint-cli2",
+        "markdown-toc",
+        -- lua (LazyVim config itself)
+        "lua-language-server",
+        "stylua",
       },
       auto_update = false,
       run_on_start = false,
