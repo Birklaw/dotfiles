@@ -52,8 +52,8 @@ return {
         "lua-language-server",
         "stylua",
       },
-      auto_update = false,
-      run_on_start = false,
+      auto_update = false, -- updates stay deliberate: lazy-lock.json / :MasonUpdate
+      run_on_start = true,
     },
   },
 }
