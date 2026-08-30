@@ -48,6 +48,8 @@ return {
         "marksman",
         "markdownlint-cli2",
         "markdown-toc",
+        -- toml (lang.toml)
+        "taplo",
         -- lua (LazyVim config itself)
         "lua-language-server",
         "stylua",
