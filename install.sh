@@ -164,11 +164,10 @@ fi
 # Installs lazy.nvim plugins and Mason LSP servers/formatters (headless).
 # Skip with SKIP_NVIM_BOOTSTRAP=1.
 if [[ "$MODE" == "apply" && "${SKIP_NVIM_BOOTSTRAP:-0}" != "1" ]] && command -v nvim &>/dev/null; then
+  NVIM_BOOTSTRAP_TIMEOUT="${NVIM_BOOTSTRAP_TIMEOUT:-1800}"
   echo
-  echo "==> Bootstrapping Neovim plugins (headless)..."
-  nvim --headless "+Lazy! sync" +qa \
-    || echo "    [warn] Lazy sync failed; first nvim launch will retry"
-  nvim --headless "+MasonToolsInstallSync" +qa 2>/dev/null \
-    || nvim --headless "+MasonUpdate" +qa \
-    || echo "    [warn] Mason tool install skipped; first nvim launch will auto-install"
+  echo "==> Bootstrapping Neovim plugins (headless; ${NVIM_BOOTSTRAP_TIMEOUT}s bound)..."
+  timeout --kill-after=10 "$NVIM_BOOTSTRAP_TIMEOUT" \
+  nvim --headless "+Lazy! sync" "+MasonToolsInstallSync" +qa \
+  || echo "[warn] Neovim bootstrap failed or hit the ${NVIM_BOOTSTRAP_TIMEOUT}s bound; it retries on the next devpod up / first nvim launch"
 fi

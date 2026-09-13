@@ -13,8 +13,8 @@ return {
     opts = {
       -- Servers/formatters the extras don't already declare via mason.
       -- LazyVim extras auto-register their own tools on LSP attach, but for
-      -- deterministic headless bootstrap (post-create.sh / install.sh) we
-      -- list every server explicitly so first `nvim` open is fully warm.
+      -- deterministic headless bootstrap (dotfiles install.sh) we list
+      -- every server explicitly so first `nvim` open is fully warm.
       ensure_installed = {
         -- bash (no dedicated LazyVim lang extra)
         "bash-language-server",
@@ -54,8 +54,9 @@ return {
         "lua-language-server",
         "stylua",
       },
-      auto_update = false, -- updates stay deliberate: lazy-lock.json / :MasonUpdate
+      auto_update = false, -- Updates stay deliberate: lazy-lock.json / :MasonUpdate
       run_on_start = true,
+      start_delay = 2000,  -- Defer auto-run so the headless MasonToolsInstallSync claims installs first
     },
   },
 }
