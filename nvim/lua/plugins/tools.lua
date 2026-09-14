@@ -3,60 +3,19 @@
 -- LazyVim extras (see lazyvim.json) — keep this file for tweaks only.
 
 return {
-  -- mason-tool-installer: enables "+MasonToolsInstallSync" for headless
-  -- pre-warm in .devcontainer/post-create.sh and dotfiles install.sh.
-  -- Installs the LSP servers/formatters/linters that the enabled extras
-  -- declare, deterministically, without opening the UI.
+  -- mason-tool-installer: interactive auto-install of the tools in
+  -- lua/mason-tools.lua on nvim startup, plus the :MasonTools* commands.
+  -- NOT used by the headless bootstrap in install.sh — that drives
+  -- :MasonInstall directly, because MasonToolsInstallSync can deadlock
+  -- after a successful run (mason.nvim#2049).
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     cmd = { "MasonToolsInstall", "MasonToolsInstallSync", "MasonToolsUpdate" },
     opts = {
-      -- Servers/formatters the extras don't already declare via mason.
-      -- LazyVim extras auto-register their own tools on LSP attach, but for
-      -- deterministic headless bootstrap (dotfiles install.sh) we list
-      -- every server explicitly so first `nvim` open is fully warm.
-      ensure_installed = {
-        -- bash (no dedicated LazyVim lang extra)
-        "bash-language-server",
-        "shfmt",
-        "shellcheck",
-        -- python (lang.python)
-        "basedpyright",
-        "ruff",
-        "debugpy",
-        -- go (lang.go)
-        "gopls",
-        "gofumpt",
-        "goimports",
-        "golangci-lint",
-        "delve",
-        -- typescript (lang.typescript)
-        "vtsls",
-        "js-debug-adapter",
-        -- yaml / k8s (lang.yaml, lang.helm)
-        "yaml-language-server",
-        "helm-ls",
-        -- docker (lang.docker)
-        "dockerfile-language-server",
-        "docker-compose-language-service",
-        "hadolint",
-        -- terraform (lang.terraform)
-        "terraform-ls",
-        "tflint",
-        -- json/markdown (lang.json, lang.markdown)
-        "json-lsp",
-        "marksman",
-        "markdownlint-cli2",
-        "markdown-toc",
-        -- toml (lang.toml)
-        "taplo",
-        -- lua (LazyVim config itself)
-        "lua-language-server",
-        "stylua",
-      },
+      ensure_installed = require("mason-tools").tools,
       auto_update = false, -- Updates stay deliberate: lazy-lock.json / :MasonUpdate
       run_on_start = true,
-      start_delay = 2000,  -- Defer auto-run so the headless MasonToolsInstallSync claims installs first
+      start_delay = 2000, -- Avoid racing a manual :MasonToolsInstallSync
     },
   },
 }
