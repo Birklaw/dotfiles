@@ -1,0 +1,16 @@
+onboarding = false
+
+[ui]
+status_indicators = "symbols"
+
+[theme]
+name = "gruvbox-light"
+auto_switch = false
+
+# Permit `herdr --remote <workspace>.devpod` and saved-machine attach to be
+# launched from inside existing herdr panes — the nested-herdr guard
+# otherwise aborts with "nested herdr is disabled by default" before ever
+# reaching the remote (e.g. attaching devpod machines from the main herdr
+# session).
+[experimental]
+allow_nested = true

@@ -123,6 +123,7 @@ HOME_DOTFILES=(
 CONFIG_DOTFILES=(
   "pnpm.config.yaml:$HOME/.config/pnpm/config.yaml"
   "uv.toml:$HOME/.config/uv/uv.toml"
+  "herdr/config.toml:$HOME/.config/herdr/config.toml"
   "nvim:$HOME/.config/nvim"
 )
 
