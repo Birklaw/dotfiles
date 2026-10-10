@@ -4,7 +4,7 @@ onboarding = false
 status_indicators = "symbols"
 
 [theme]
-name = "gruvbox-light"
+name = "vesper"
 auto_switch = false
 
 # Permit `herdr --remote <workspace>.devpod` and saved-machine attach to be
@@ -14,3 +14,6 @@ auto_switch = false
 # session).
 [experimental]
 allow_nested = true
+
+[keys]
+switch_workspace = "prefix+shift+1..9"
