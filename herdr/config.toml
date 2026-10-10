@@ -4,7 +4,7 @@ onboarding = false
 status_indicators = "symbols"
 
 [theme]
-name = "vesper"
+name = "rose-pine"
 auto_switch = false
 
 # Permit `herdr --remote <workspace>.devpod` and saved-machine attach to be
