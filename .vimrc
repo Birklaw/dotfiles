@@ -87,7 +87,7 @@ set expandtab
 set autoindent
 
 " Highlight trailing whitespace
-autocmd BufRead,BufNewFile * match Error /\s\+$/
 
+autocmd BufRead,BufNewFile * match ErrorMsg /\s\+$/
 " Set backspace to act more intuitively
 set backspace=indent,eol,start
