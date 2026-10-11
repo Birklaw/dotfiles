@@ -127,10 +127,16 @@ CONFIG_DOTFILES=(
   "nvim:$HOME/.config/nvim"
 )
 
+# Pi agent config. AGENTS.md carries cross-cutting operating behaviours that
+# complement the skill packs installed by dev-env-template.
+PI_DOTFILES=(
+  "pi/AGENTS.md:$HOME/.pi/agent/AGENTS.md"
+)
+
 # ---------- apply ----------
 if [[ "$MODE" == "unlink" ]]; then
   echo "==> Removing dotfile symlinks..."
-  for entry in "${HOME_DOTFILES[@]}" "${CONFIG_DOTFILES[@]}"; do
+  for entry in "${HOME_DOTFILES[@]}" "${CONFIG_DOTFILES[@]}" "${PI_DOTFILES[@]}"; do
     target="${entry##*:}"
     unlink_file "$target"
   done
@@ -149,6 +155,14 @@ done
 echo
 echo "==> Linking config files..."
 for entry in "${CONFIG_DOTFILES[@]}"; do
+  source="${entry%%:*}"
+  target="${entry##*:}"
+  link_file "$DOTFILES_DIR/$source" "$target"
+done
+
+echo
+echo "==> Linking Pi config..."
+for entry in "${PI_DOTFILES[@]}"; do
   source="${entry%%:*}"
   target="${entry##*:}"
   link_file "$DOTFILES_DIR/$source" "$target"
