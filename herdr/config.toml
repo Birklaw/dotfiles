@@ -16,4 +16,4 @@ auto_switch = false
 allow_nested = true
 
 [keys]
-switch_workspace = "prefix+shift+1..9"
+focus_agent = "prefix+shift+1..9"
