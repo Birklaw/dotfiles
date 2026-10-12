@@ -3,9 +3,9 @@
 # Dotfiles installer — safe to run multiple times, on host or in container.
 #
 # Usage:
-#   ./setup.sh           # apply (with backups)
-#   ./setup.sh --dry-run # preview changes without applying
-#   ./setup.sh --unlink  # remove symlinks created by this script
+#   ./install.sh           # apply (with backups)
+#   ./install.sh --dry-run # preview changes without applying
+#   ./install.sh --unlink  # remove symlinks created by this script
 #
 # Design principles:
 #   - Never overwrite an existing file without backing it up first.
@@ -33,7 +33,7 @@ esac
 # DevPod clones dotfiles to ~/.dotfiles by default; fall back to script dir.
 if [[ -d "$HOME/.dotfiles" ]]; then
   DOTFILES_DIR="$HOME/.dotfiles"
-elif [[ -f "$HOME/dotfiles/setup.sh" ]]; then
+elif [[ -f "$HOME/dotfiles/install.sh" ]]; then
   DOTFILES_DIR="$HOME/dotfiles"
 else
   # Last resort: assume script is run from the repo root
