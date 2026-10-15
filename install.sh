@@ -187,3 +187,39 @@ if [[ "$MODE" == "apply" && "${SKIP_NVIM_BOOTSTRAP:-0}" != "1" ]] && command -v 
   nvim --headless "+Lazy! sync" '+lua require("mason-tools").bootstrap()' +qa \
   || echo "[warn] Neovim bootstrap failed or hit the ${NVIM_BOOTSTRAP_TIMEOUT}s bound; it retries on the next devpod up / first nvim launch"
 fi
+
+# ---------- GitHub credentials (DevPod workspaces only) ----------
+# DevPod injects a git credential helper that forwards credential prompts to
+# the host. For github.com, reset that inherited helper chain (the empty
+# value clears it) and use the built-in `store` helper instead, so a
+# fine-grained PAT can be entered once and is then read from
+# ~/.git-credentials. All other hosts keep DevPod's forwarding.
+# --replace-all keeps the pair idempotent: postcreate reruns on every
+# `devpod up`, and a plain `git config` set would fail on the second run
+# ("cannot overwrite multiple values" once the key is multi-valued).
+# DevPod-only on purpose: on the host these lines would reroute github.com
+# credentials into plaintext ~/.git-credentials.
+if [[ "$MODE" == "apply" ]] && command -v git &>/dev/null \
+   && { [[ -n "${DEVPOD:-}" ]] || [[ -n "${DEVPOD_WORKSPACE_ID:-}" ]]; }; then
+  git config --global --replace-all credential.https://github.com.helper ""
+  git config --global --add credential.https://github.com.helper store
+  echo
+  echo "==> GitHub: credential helper set to 'store' for https://github.com (other hosts keep DevPod's forwarding)"
+  if grep -Eq '^https://[^:]+:[^@]+@github\.com' "$HOME/.git-credentials" 2>/dev/null; then
+    echo "    [ok]     GitHub credentials already stored in ~/.git-credentials"
+  else
+    cat <<'EOF'
+    One manual step left (needed once per workspace): store your GitHub credentials.
+
+      1. Create a fine-grained PAT with "Contents: Read and write" on the
+         repo(s) you will work on here:
+         https://github.com/settings/personal-access-tokens/new
+      2. Run any authenticated git command, e.g.:
+           git ls-remote https://github.com/<owner>/<repo>
+         When prompted: username = your GitHub username, password = the PAT.
+
+    Git saves the credentials to ~/.git-credentials (plaintext, workspace-local)
+    and won't prompt again. GitHub operations needing auth fail until then.
+EOF
+  fi
+fi
