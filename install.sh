@@ -131,6 +131,7 @@ CONFIG_DOTFILES=(
 # complement the skill packs installed by dev-env-template.
 PI_DOTFILES=(
   "pi/AGENTS.md:$HOME/.pi/agent/AGENTS.md"
+  "pi/prompts/evaluate-review.md:$HOME/.pi/agent/prompts/evaluate-review.md"
 )
 
 # ---------- apply ----------
