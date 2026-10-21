@@ -18,4 +18,19 @@ return {
       start_delay = 2000, -- Avoid racing a manual :MasonToolsInstallSync
     },
   },
+
+  -- Snacks explorer: show hidden files by default. `<a-h>` still toggles
+  -- them per-session; gitignored files stay excluded (`ignored = false`).
+  {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        sources = {
+          explorer = {
+            hidden = true,
+          },
+        },
+      },
+    },
+  },
 }

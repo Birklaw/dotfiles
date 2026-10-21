@@ -4,3 +4,8 @@
 -- Terminal-first over SSH/tmux: use OSC52 so yanks reach the local clipboard
 -- even inside devcontainers (Neovim >= 0.10 has built-in OSC52 support).
 vim.opt.clipboard = "unnamedplus"
+
+-- Soft-wrap long lines (LazyVim default is wrap = false). linebreak wraps
+-- at word boundaries instead of mid-word.
+vim.opt.wrap = true
+vim.opt.linebreak = true
