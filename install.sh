@@ -48,6 +48,12 @@ echo
 # ---------- helpers ----------
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
+# DevPod tags its containers with DEVPOD / DEVPOD_WORKSPACE_ID; several links
+# below are host-only, so detect it once instead of per block.
+is_devpod() {
+  [[ -n "${DEVPOD:-}" || -n "${DEVPOD_WORKSPACE_ID:-}" ]]
+}
+
 backup_if_exists() {
   local target="$1"
   if [[ -e "$target" && ! -L "$target" ]]; then
@@ -134,10 +140,28 @@ PI_DOTFILES=(
   "pi/prompts/evaluate-review.md:$HOME/.pi/agent/prompts/evaluate-review.md"
 )
 
+# Host-only Pi config: entries that only make sense where Pi itself runs on the
+# machine, not in a workspace container.
+#
+# `pi/mcp.json` registers the chrome-devtools MCP server: headless Chromium on
+# this machine, --isolated profile, --allowedUrlPattern restricted to
+# localhost/127.0.0.1 (plus about:), network headers redacted, and a pinned
+# server version. That is the "hardened host flow": browser testing happens
+# from the host against the workspace's forwarded dev-server port, while the
+# app keeps running inside the container.
+#
+# DevPod applies these dotfiles *inside every container*. There is no browser
+# there, and the point of the split is that container-side agents do not reach
+# the host's forwarded ports — an MCP entry would just fail to launch on every
+# session. Hence: host-only.
+PI_HOST_DOTFILES=(
+  "pi/mcp.json:$HOME/.pi/agent/mcp.json"
+)
+
 # ---------- apply ----------
 if [[ "$MODE" == "unlink" ]]; then
   echo "==> Removing dotfile symlinks..."
-  for entry in "${HOME_DOTFILES[@]}" "${CONFIG_DOTFILES[@]}" "${PI_DOTFILES[@]}"; do
+  for entry in "${HOME_DOTFILES[@]}" "${CONFIG_DOTFILES[@]}" "${PI_DOTFILES[@]}" "${PI_HOST_DOTFILES[@]}"; do
     target="${entry##*:}"
     unlink_file "$target"
   done
@@ -168,6 +192,27 @@ for entry in "${PI_DOTFILES[@]}"; do
   target="${entry##*:}"
   link_file "$DOTFILES_DIR/$source" "$target"
 done
+
+if is_devpod; then
+  echo
+  echo "==> Skipping host-only Pi config (browser testing) inside this DevPod workspace."
+else
+  echo
+  echo "==> Linking host-only Pi config..."
+  for entry in "${PI_HOST_DOTFILES[@]}"; do
+    source="${entry%%:*}"
+    target="${entry##*:}"
+    link_file "$DOTFILES_DIR/$source" "$target"
+  done
+  # The chrome-devtools entry launches the distro browser at a fixed path.
+  # dev-env-template's bootstrap installs it; flag it if this host lacks it so
+  # the MCP failure is explained here rather than mid-session.
+  if [[ "$MODE" == "apply" ]] && [[ ! -x /usr/bin/chromium ]]; then
+    echo "    [warn]   /usr/bin/chromium is missing: chrome-devtools MCP will fail to launch."
+    echo "             Run dev-env-template's bootstrap, or point --executablePath in"
+    echo "             ~/.pi/agent/mcp.json at an installed Chrome/Chromium."
+  fi
+fi
 
 echo
 if [[ "$MODE" == "dry-run" ]]; then
@@ -200,8 +245,7 @@ fi
 # ("cannot overwrite multiple values" once the key is multi-valued).
 # DevPod-only on purpose: on the host these lines would reroute github.com
 # credentials into plaintext ~/.git-credentials.
-if [[ "$MODE" == "apply" ]] && command -v git &>/dev/null \
-   && { [[ -n "${DEVPOD:-}" ]] || [[ -n "${DEVPOD_WORKSPACE_ID:-}" ]]; }; then
+if [[ "$MODE" == "apply" ]] && command -v git &>/dev/null && is_devpod; then
   git config --global --replace-all credential.https://github.com.helper ""
   git config --global --add credential.https://github.com.helper store
   echo
