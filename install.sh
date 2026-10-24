@@ -31,7 +31,11 @@ esac
 
 # ---------- locate dotfiles repo ----------
 # DevPod clones dotfiles to ~/.dotfiles by default; fall back to script dir.
-if [[ -d "$HOME/.dotfiles" ]]; then
+# DOTFILES_DIR may be set explicitly (dev-env-template's bootstrap pins the
+# checkout it just synced, so a stale ~/.dotfiles cannot be applied instead).
+if [[ -n "${DOTFILES_DIR:-}" ]]; then
+  : # explicit override, keep it
+elif [[ -d "$HOME/.dotfiles" ]]; then
   DOTFILES_DIR="$HOME/.dotfiles"
 elif [[ -f "$HOME/dotfiles/install.sh" ]]; then
   DOTFILES_DIR="$HOME/dotfiles"
