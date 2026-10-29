@@ -244,9 +244,9 @@ fi
 # value clears it) and use the built-in `store` helper instead, so a
 # fine-grained PAT can be entered once and is then read from
 # ~/.git-credentials. All other hosts keep DevPod's forwarding.
-# --replace-all keeps the pair idempotent: postcreate reruns on every
-# `devpod up`, and a plain `git config` set would fail on the second run
-# ("cannot overwrite multiple values" once the key is multi-valued).
+# --replace-all keeps the pair idempotent, matching this script's contract of
+# being safe to run repeatedly: a plain `git config` set would fail on a
+# second run ("cannot overwrite multiple values" once the key is multi-valued).
 # DevPod-only on purpose: on the host these lines would reroute github.com
 # credentials into plaintext ~/.git-credentials.
 if [[ "$MODE" == "apply" ]] && command -v git &>/dev/null && is_devpod; then
