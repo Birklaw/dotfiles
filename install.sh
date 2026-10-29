@@ -229,12 +229,17 @@ fi
 # Installs lazy.nvim plugins and Mason LSP servers/formatters (headless).
 # Skip with SKIP_NVIM_BOOTSTRAP=1.
 # Deliberately NOT MasonToolsInstallSync
+# `restore`, not `sync`: sync also updates, which re-resolves plugins and
+# rewrites the tracked nvim/lazy-lock.json on every run. restore installs
+# what is missing at the commits already in the lock and leaves the pins
+# alone, so bootstrap converges to the lock instead of chasing upstream.
+# Move pins deliberately with `:Lazy update`, then commit the lock.
 if [[ "$MODE" == "apply" && "${SKIP_NVIM_BOOTSTRAP:-0}" != "1" ]] && command -v nvim &>/dev/null; then
   NVIM_BOOTSTRAP_TIMEOUT="${NVIM_BOOTSTRAP_TIMEOUT:-1800}"
   echo
   echo "==> Bootstrapping Neovim plugins (headless; ${NVIM_BOOTSTRAP_TIMEOUT}s bound)..."
   timeout --kill-after=10 "$NVIM_BOOTSTRAP_TIMEOUT" \
-  nvim --headless "+Lazy! sync" '+lua require("mason-tools").bootstrap()' +qa \
+  nvim --headless "+Lazy! restore" '+lua require("mason-tools").bootstrap()' +qa \
   || echo "[warn] Neovim bootstrap failed or hit the ${NVIM_BOOTSTRAP_TIMEOUT}s bound; it retries on the next devpod up / first nvim launch"
 fi
 
