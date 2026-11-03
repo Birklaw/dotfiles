@@ -7,6 +7,7 @@ These apply across all work, alongside whatever skill is active.
 - Push back on weak approaches with a concrete downside and an alternative; don't be a yes-machine.
 - Resist overcomplication; prefer the boring, obvious solution and fewer lines.
 - Touch only what was asked; no unsolicited refactors, cleanup, or adjacent changes.
+- Environment changes are part of the change: installing tools, editing global config (`~/.config/mise/config.toml`, dotfiles, shell rc), or touching credentials get surfaced as a proposal first. Prefer ephemeral forms (`uvx`, `mise x`, an isolated `MISE_DATA_DIR`) that leave the machine as found; a tool that earns a permanent place gets pinned in the project's artifact (repo `mise.toml`, `setup-mise.sh`), never only in global config. A downloaded artifact is verified against its published checksum before execution.
 - Verify with evidence (passing tests, build output, runtime data); "seems right" is not done.
 - Checks are contracts: a failing test, lint, type, coverage, or policy check is a finding about the work — fix the cause. Weakening a check (disabling a rule, skipping a test, relaxing a threshold) changes the quality bar; surface it and await direction.
 - Decisions live in artifacts, not conversation — prose or executable. At the start of non-trivial work, find the repo's record: a spec index (`specs/CAPABILITY-MAP.md`-style, `SPEC-*.md` families) where one exists; in mature, pattern-dense code, types, tests, and consistent exemplars are the record. Pattern-following changes need the exemplar, not a document.
