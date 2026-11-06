@@ -48,9 +48,7 @@ M.tools = {
   "vtsls",
   "js-debug-adapter",
   -- yaml / k8s (lang.yaml, lang.helm)
-  -- mason pins 2.0.0 (published 2026-10-16); .npmrc min-release-age=14
-  -- rejects it, so pin the newest release outside the window instead.
-  "yaml-language-server@1.24.0",
+  "yaml-language-server",
   "helm-ls",
   -- docker (lang.docker)
   "dockerfile-language-server",
@@ -62,8 +60,7 @@ M.tools = {
   -- json/markdown (lang.json, lang.markdown)
   "json-lsp",
   "marksman",
-  -- mason pins 0.24.0 (published 2026-10-21); same 14-day window.
-  "markdownlint-cli2@0.23.3",
+  "markdownlint-cli2",
   "markdown-toc",
   -- toml (lang.toml)
   "taplo",
